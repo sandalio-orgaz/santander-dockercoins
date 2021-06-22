@@ -42,5 +42,8 @@ sudo docker container logs worker
 # borra todas las imágenes
 sudo docker rm -f $(sudo docker ps -qa) 
 
+# Ver la red del contenedor
+sudo docker container exec redis ip route
 
-# El puerto 80 funciona en Docker
+
+while true; do sleep 10 && sudo docker container logs worker 2>&1 | grep "Coin found" && break; done
