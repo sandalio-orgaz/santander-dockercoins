@@ -6,7 +6,7 @@ on:
 jobs:
   Dockerfile:
     env:
-      - username: sandalioorgaz
+      username: sandalioorgaz
     runs-on: ubuntu-18.04
     steps:
       - name: checkout
