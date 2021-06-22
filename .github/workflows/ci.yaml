@@ -14,13 +14,13 @@ jobs:
       - name: test-env
         run: echo ${username}
       - name: build-hasher
-        run: docker image build --file hasher/Dockerfile --tag index.docker.io/sandalioorgaz/santander-dockercoins:test-hasher hasher/
+        run: docker image build --file hasher/Dockerfile --tag index.docker.io/${username}/santander-dockercoins:test-hasher hasher/
       - name: build-rng
-        run: docker image build --file rng/Dockerfile --tag index.docker.io/sandalioorgaz/santander-dockercoins:test-rng rng/
+        run: docker image build --file rng/Dockerfile --tag index.docker.io/${username}/santander-dockercoins:test-rng rng/
       - name: build-webui
-        run: docker image build --file webui/Dockerfile --tag index.docker.io/sandalioorgaz/santander-dockercoins:test-webui webui/
+        run: docker image build --file webui/Dockerfile --tag index.docker.io/${username}/santander-dockercoins:test-webui webui/
       - name: build-worker
-        run: docker image build --file worker/Dockerfile --tag index.docker.io/sandalioorgaz/santander-dockercoins:test-worker worker/
+        run: docker image build --file worker/Dockerfile --tag index.docker.io/${username}/santander-dockercoins:test-worker worker/
       - name: network-hasher
         run: docker network create hasher-network
       - name: network-redis
@@ -32,13 +32,13 @@ jobs:
       - name: run-redis
         run: docker container run --detach --entrypoint docker-entrypoint.sh --name redis --network redis-network --rm --volume redis-volume:/data --workdir /data index.docker.io/library/redis:6.2.4-alpine3.13@sha256:b7cb70118c9729f8dc019187a4411980418a87e6a837f4846e87130df379e2c8 redis-server
       - name: run-haser
-        run: docker container run --detach --entrypoint irb --name hasher --network hasher-network --rm --volume ${PWD}/hasher/hasher.rb:/src/hasher.rb:ro --workdir /src/ index.docker.io/sandalioorgaz/santander-dockercoins:test-hasher hasher.rb
+        run: docker container run --detach --entrypoint irb --name hasher --network hasher-network --rm --volume ${PWD}/hasher/hasher.rb:/src/hasher.rb:ro --workdir /src/ index.docker.io/${username}/santander-dockercoins:test-hasher hasher.rb
       - name: run-rng
-        run: docker container run --detach --entrypoint python3 --name rng --network rng-network --rm --volume ${PWD}/rng/rng.py:/src/rng.py:ro --workdir /src/ index.docker.io/sandalioorgaz/santander-dockercoins:test-rng rng.py
+        run: docker container run --detach --entrypoint python3 --name rng --network rng-network --rm --volume ${PWD}/rng/rng.py:/src/rng.py:ro --workdir /src/ index.docker.io/${username}/santander-dockercoins:test-rng rng.py
       - name: run-webui
-        run: docker container run --detach --entrypoint node --name webui --network redis-network --rm --volume ${PWD}/webui/files/:/src/files/:ro --volume ${PWD}/webui/webui.js:/src/webui.js:ro --workdir /src/ index.docker.io/sandalioorgaz/santander-dockercoins:test-webui webui.js
+        run: docker container run --detach --entrypoint node --name webui --network redis-network --rm --volume ${PWD}/webui/files/:/src/files/:ro --volume ${PWD}/webui/webui.js:/src/webui.js:ro --workdir /src/ index.docker.io/${username}/santander-dockercoins:test-webui webui.js
       - name: run-worker
-        run: docker container run --detach --entrypoint python3 --name worker --network hasher-network --rm --volume ${PWD}/worker/worker.py:/src/worker.py:ro --workdir /src/ index.docker.io/sandalioorgaz/santander-dockercoins:test-worker worker.py
+        run: docker container run --detach --entrypoint python3 --name worker --network hasher-network --rm --volume ${PWD}/worker/worker.py:/src/worker.py:ro --workdir /src/ index.docker.io/${username}/santander-dockercoins:test-worker worker.py
       - name: connect-redis
         run: docker network connect redis-network worker
       - name: connect-rng
