@@ -1,0 +1,32 @@
+name: cd
+on:
+  release:
+    types:
+      - published
+jobs:
+  Dockerhub:
+    env:
+      username: sandalioorgaz
+    runs-on: ubuntu-18.04
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: build-hasher
+        run: docker image build --file hasher/Dockerfile --tag index.docker.io/${username}/santander-dockercoins:$( basename ${GITHUB_REF} )-hasher hasher/
+      - name: build-rng
+        run: docker image build --file rng/Dockerfile --tag index.docker.io/${username}/santander-dockercoins:$( basename ${GITHUB_REF} )-rng rng/
+      - name: build-webui
+        run: docker image build --file webui/Dockerfile --tag index.docker.io/${username}/santander-dockercoins:$( basename ${GITHUB_REF} )-webui webui/
+      - name: build-worker
+        run: docker image build --file worker/Dockerfile --tag index.docker.io/${username}/santander-dockercoins:$( basename ${GITHUB_REF} )-worker worker/
+      - name: docker-login
+        run: docker login -u ${username} -p ${{secrets.SANTANDER_DOCKERCOINS}}
+      - name: push-hasher
+        run: docker image push index.docker.io/${username}/santander-dockercoins:$( basename ${GITHUB_REF} )-hasher
+      - name: push-rng
+        run: docker image push index.docker.io/${username}/santander-dockercoins:$( basename ${GITHUB_REF} )-rng
+      - name: push-webui
+        run: docker image push index.docker.io/${username}/santander-dockercoins:$( basename ${GITHUB_REF} )-webui
+      - name: push-worker
+        run: docker image push index.docker.io/${username}/santander-dockercoins:$( basename ${GITHUB_REF} )-worker
+      
