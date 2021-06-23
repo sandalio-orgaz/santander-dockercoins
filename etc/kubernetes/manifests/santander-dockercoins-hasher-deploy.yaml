@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: santander-dockercoins-hasher-deploy
+spec:
+  selector:
+    matchLabels:
+      app: santander-dockercoins-hasher
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: santander-dockercoins-hasher
+    spec:
+      containers:
+        - name: santander-dockercoins-hasher-container
+          args:
+            - hasher.rb
+          command:
+            - irb
+          image: index.docker.io/sandalioorgaz/santander-dockercoins:0.3-hasher
+          volumeMounts:
+            - mountPath: /src/
+              name: santander-dockercoins-hasher-volume
+              readOnly: true
+          workingDir: /src/
+      initContainers:
+        - name: santander-dockercoins-hasher-initcontainer
+          args:
+            - -c
+            - cd /src/; git clone https://github.com/sandalioorgaz/santander-dockercoins; cd santander-dockercoins; git checkout 2021-06; cp hasher/hasher.rb /src/; rm -rf /src/santander-dockercoins 
+          command:
+            - sh
+          image: index.docker.io/alpine/git:latest
+          volumeMounts:
+            - mountPath: /src/
+              name: santander-dockercoins-hasher-volume
+              readOnly: false
+      volumes:
+        - name: santander-dockercoins-hasher-volume
+          emptyDir: {}
