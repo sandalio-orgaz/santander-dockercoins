@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: santander-dockercoins-webui-deploy
+spec:
+  selector:
+    matchLabels:
+      app: santander-dockercoins-webui
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: santander-dockercoins-webui
+    spec:
+      containers:
+        - name: santander-dockercoins-webui-container
+          args:
+            - webui.js
+          command:
+            - node
+          image: index.docker.io/sandalioorgaz/santander-dockercoins:0.3-webui
+          volumeMounts:
+            - mountPath: /src/
+              name: santander-dockercoins-webui-volume
+              readOnly: true
+          workingDir: /src/
+      initContainers:
+        - name: santander-dockercoins-webui-initcontainer
+          args:
+            - -c
+            - cd /src/; git clone https://github.com/sandalioorgaz/santander-dockercoins; cd santander-dockercoins; git checkout 2021-06; cp webui/webui.js /src/; cp -r webui/files/ /src/; rm -rf /src/santander-dockercoins 
+          command:
+            - sh
+          image: index.docker.io/alpine/git:latest
+          volumeMounts:
+            - mountPath: /src/
+              name: santander-dockercoins-webui-volume
+              readOnly: false
+      volumes:
+        - name: santander-dockercoins-webui-volume
+          emptyDir: {}
