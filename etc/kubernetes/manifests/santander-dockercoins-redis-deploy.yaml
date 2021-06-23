@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: santander-dockercoins-redis-deploy
+spec:
+  selector:
+    matchLabels:
+      app: santander-dockercoins-redis
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: santander-dockercoins-redis
+    spec:
+      containers:
+        - name: santander-dockercoins-redis-container
+          args:
+            - redis-server
+          command:
+            - docker-entrypoint.sh
+          image: index.docker.io/library/redis:6.2.4-alpine3.13@sha256:b7cb70118c9729f8dc019187a4411980418a87e6a837f4846e87130df379e2c8
+          volumeMounts:
+            - mountPath: /data/
+              name: santander-dockercoins-redis-volume
+              readOnly: false
+          workingDir: /data/
+      volumes:
+        - name: santander-dockercoins-redis-volume
+          persistentVolumeClaim: 
+            claimName: santander-dockercoins-redis-pvc
+            readOnly: false
