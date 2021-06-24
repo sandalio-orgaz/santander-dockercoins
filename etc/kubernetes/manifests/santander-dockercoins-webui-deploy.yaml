@@ -37,7 +37,7 @@ spec:
             - node
           image: index.docker.io/sandalioorgaz/santander-dockercoins:0.3-webui
           volumeMounts:
-            - mountPath: /src/
+            - mountPath: /src/files/
               name: santander-dockercoins-webui-files-volume
               readOnly: true
             - mountPath: /src/webui.js
@@ -49,12 +49,12 @@ spec:
         - name: santander-dockercoins-webui-initcontainer
           args:
             - -c
-            - cd /src/; git clone https://github.com/sandalioorgaz/santander-dockercoins; cd santander-dockercoins; git checkout 2021-06; cp -r webui/files/ /src/; rm -rf /src/santander-dockercoins 
+            - cd /src/files/; git clone https://github.com/sandalioorgaz/santander-dockercoins; cd santander-dockercoins; git checkout 2021-06; cp -r webui/files/ /src/files/; rm -rf /src/files/santander-dockercoins 
           command:
             - sh
           image: index.docker.io/alpine/git:latest
           volumeMounts:
-            - mountPath: /src/
+            - mountPath: /src/files/
               name: santander-dockercoins-webui-files-volume
               readOnly: false
       volumes:
