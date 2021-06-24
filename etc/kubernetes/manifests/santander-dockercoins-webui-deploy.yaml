@@ -37,7 +37,7 @@ spec:
             - node
           image: index.docker.io/sandalioorgaz/santander-dockercoins:0.3-webui
           volumeMounts:
-            - mountPath: /src/files/
+            - mountPath: /src/
               name: santander-dockercoins-webui-files-volume
               readOnly: true
             - mountPath: /src/webui.js
