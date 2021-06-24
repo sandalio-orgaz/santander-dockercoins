@@ -6,12 +6,29 @@ spec:
   selector:
     matchLabels:
       app: santander-dockercoins-webui
-  replicas: 1
+  replicas: 2
   template:
     metadata:
       labels:
         app: santander-dockercoins-webui
     spec:
+      affinity:
+        podAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: santander-dockercoins-redis
+                topologyKey: ocp-ipi.sebastian-colomar.com/luis
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchLabels:
+                    app: santander-dockercoins-worker
+                topologyKey: sebastian-colomar.com/sebastian                
       containers:
         - name: santander-dockercoins-webui-container
           args:
